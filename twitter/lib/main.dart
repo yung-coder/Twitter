@@ -14,8 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppTheme.theme,
-      home: const Text('Hey'),
+      home: Scaffold(
+        body: Text('Twiiter'),
+      ),
     );
   }
 }
-
