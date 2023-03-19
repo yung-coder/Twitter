@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twitter/features/auth/view/login_view.dart';
 import 'package:twitter/theme/app_theme.dart';
 
 void main() {
@@ -14,9 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppTheme.theme,
-      home: Scaffold(
-        body: Text('Twiiter Start'),
-      ),
+      home: const LoginView(),
     );
   }
 }
