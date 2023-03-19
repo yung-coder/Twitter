@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: AppTheme.theme,
       home: Scaffold(
-        body: Text('Twiiter'),
+        body: Text('Twiiter Start'),
       ),
     );
   }
