@@ -1,17 +1,19 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:twitter/apis/auth_api.dart';
+import 'package:twitter/apis/user_api.dart';
 import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/view/login_view.dart';
 import 'package:twitter/features/home/view/home_view.dart';
 import 'package:appwrite/models.dart' as model;
+import 'package:twitter/models/user_model.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {
   return AuthController(
-    authAPI: ref.watch(authAPIProvider),
-  );
+      authAPI: ref.watch(authAPIProvider), userAPI: ref.watch(userAPIProvider));
 });
 
 final currentUserProvider = FutureProvider((ref) {
@@ -21,8 +23,10 @@ final currentUserProvider = FutureProvider((ref) {
 
 class AuthController extends StateNotifier<bool> {
   final AuthAPI _authAPI;
-  AuthController({required AuthAPI authAPI})
+  final UserAPI _userAPI;
+  AuthController({required AuthAPI authAPI, required UserAPI userAPI})
       : _authAPI = authAPI,
+        _userAPI = userAPI,
         super(false);
 
   Future<model.Account?> currentUser() => _authAPI.currentUserAccount();
@@ -40,9 +44,23 @@ class AuthController extends StateNotifier<bool> {
     state = false;
     res.fold(
       (l) => showSnackBar(context, l.message),
-      (r) {
-        showSnackBar(context, 'Account created! Login');
-        Navigator.push(context, LoginView.route());
+      (r) async {
+        UserModel userModel = UserModel(
+          email: email,
+          name: getNameFromEmail(email),
+          followers: const [],
+          following: const [],
+          profilePic: '',
+          bannerPic: '',
+          uid: '',
+          bio: '',
+          isTwitterBlue: false,
+        );
+        final res2 = await _userAPI.saveUserData(userModel);
+        res2.fold((l) => showSnackBar(context, l.message), (_) {
+          showSnackBar(context, 'Account created! Login');
+          Navigator.push(context, LoginView.route());
+        });
       },
     );
   }
