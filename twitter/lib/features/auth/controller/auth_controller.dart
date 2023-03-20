@@ -1,9 +1,11 @@
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter/apis/auth_api.dart';
 import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/view/login_view.dart';
 import 'package:twitter/features/home/view/home_view.dart';
+import 'package:appwrite/models.dart' as model;
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {
@@ -12,11 +14,18 @@ final authControllerProvider =
   );
 });
 
+final currentUserProvider = FutureProvider((ref) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.currentUser();
+});
+
 class AuthController extends StateNotifier<bool> {
   final AuthAPI _authAPI;
   AuthController({required AuthAPI authAPI})
       : _authAPI = authAPI,
         super(false);
+
+  Future<model.Account?> currentUser() => _authAPI.currentUserAccount();
 
   void signUp({
     required String email,
