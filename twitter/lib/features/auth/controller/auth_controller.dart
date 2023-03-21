@@ -10,6 +10,8 @@ import 'package:twitter/features/home/view/home_view.dart';
 import 'package:appwrite/models.dart' as model;
 import 'package:twitter/models/user_model.dart';
 
+// fecth userdata 
+
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {
   return AuthController(
