@@ -10,12 +10,26 @@ import 'package:twitter/features/home/view/home_view.dart';
 import 'package:appwrite/models.dart' as model;
 import 'package:twitter/models/user_model.dart';
 
-// fecth userdata 
+// fecth userdata
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, bool>((ref) {
   return AuthController(
-      authAPI: ref.watch(authAPIProvider), userAPI: ref.watch(userAPIProvider));
+    authAPI: ref.watch(authAPIProvider),
+    userAPI: ref.watch(userAPIProvider),
+  );
+});
+
+final currentUserDetailsProvider = FutureProvider((ref) {
+  final currentUserId = ref.watch(currentUserProvider).value!.$id;
+  final userDetails = ref.watch(userDetailsProvider(currentUserId));
+  print(userDetails);
+  return userDetails.value;
+});
+
+final userDetailsProvider = FutureProvider.family((ref, String uid) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getUsetData(uid);
 });
 
 final currentUserProvider = FutureProvider((ref) {
@@ -54,7 +68,7 @@ class AuthController extends StateNotifier<bool> {
           following: const [],
           profilePic: '',
           bannerPic: '',
-          uid: '',
+          uid: r.$id,
           bio: '',
           isTwitterBlue: false,
         );
@@ -84,5 +98,11 @@ class AuthController extends StateNotifier<bool> {
         Navigator.push(context, HomeView.route());
       },
     );
+  }
+
+  Future<UserModel> getUsetData(String uid) async {
+    final document = await _userAPI.getUserData(uid);
+    final updatedUser = UserModel.fromMap(document.data);
+    return updatedUser;
   }
 }
