@@ -4,5 +4,3 @@ class AppwriteConstants {
   static const String endPoint = 'http://192.168.1.7:3000/v1';
   static const String userscollectionId = '641b3161edd53d5ff970'; 
 }
-
-// 641b36cf147c68106318  641b36cf147c68106318
