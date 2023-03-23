@@ -40,7 +40,6 @@ class _CarouselImageState extends State<CarouselImage> {
                   .toList(),
               options: CarouselOptions(
                   enableInfiniteScroll: false,
-                  height: 400,
                   viewportFraction: 1,
                   onPageChanged: (index, reson) {
                     _cuurent = index;
@@ -48,6 +47,7 @@ class _CarouselImageState extends State<CarouselImage> {
                   }),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: widget.imageLinks.asMap().entries.map((e) {
                 return Container(
                   width: 12,
