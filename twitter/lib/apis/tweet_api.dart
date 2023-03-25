@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:twitter/constants/constants.dart';
 import 'package:twitter/core/Providers.dart';
+import 'package:twitter/core/enums/tweet_type_enum.dart';
 import 'package:twitter/core/faliure.dart';
 import 'package:twitter/core/type_defs.dart';
 import 'package:twitter/models/tweet_model.dart';
@@ -19,6 +20,7 @@ abstract class ITweetAPI {
   Future<List<Document>> getTweets();
   Stream<RealtimeMessage> getLatestTweet();
   FutureEither<Document> likeTweet(Tweet tweet);
+  FutureEither<Document> updateReshareCount(Tweet tweet);
 }
 
 class TweetAPI implements ITweetAPI {
@@ -74,6 +76,27 @@ class TweetAPI implements ITweetAPI {
         documentId: tweet.id,
         data: {
           'likes': tweet.likes,
+        },
+      );
+      return right(document);
+    } on AppwriteException catch (e, st) {
+      return left(
+        Failure(e.message ?? 'Some unexpected error', st),
+      );
+    } catch (e, st) {
+      return left(Failure(e.toString(), st));
+    }
+  }
+
+  @override
+  FutureEither<Document> updateReshareCount(Tweet tweet) async {
+    try {
+      final document = await _db.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.tweetcollectionId,
+        documentId: tweet.id,
+        data: {
+          'reshareCount': tweet.reshareCount,
         },
       );
       return right(document);
