@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter/common/error_page.dart';
+import 'package:twitter/common/loading_page.dart';
+import 'package:twitter/features/explore/controller/explore_controller.dart';
+import 'package:twitter/features/explore/widgets/search_title.dart';
 import 'package:twitter/theme/pallete.dart';
 
 class ExploreView extends ConsumerStatefulWidget {
@@ -11,6 +15,7 @@ class ExploreView extends ConsumerStatefulWidget {
 
 class _ExploreViewState extends ConsumerState<ExploreView> {
   final searchControlller = TextEditingController();
+  bool iShowUsers = false;
 
   @override
   void dispose() {
@@ -31,6 +36,11 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
           height: 50,
           child: TextField(
             controller: searchControlller,
+            onSubmitted: (value) {
+              setState(() {
+                iShowUsers = true;
+              });
+            },
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(10).copyWith(
                 left: 20,
@@ -44,6 +54,21 @@ class _ExploreViewState extends ConsumerState<ExploreView> {
           ),
         ),
       ),
+      body: iShowUsers
+          ? ref.watch(searchUserProvider(searchControlller.text)).when(
+                data: (users) {
+                  return ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final user = users[index];
+                      return SearchTile(userModel: user);
+                    },
+                  );
+                },
+                error: (error, st) => ErrorText(error: error.toString()),
+                loading: () => const Loader(),
+              )
+          : const SizedBox(),
     );
   }
 }
