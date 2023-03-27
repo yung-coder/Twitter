@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:twitter/common/error_page.dart';
 import 'package:twitter/common/loading_page.dart';
 import 'package:twitter/constants/constants.dart';
 import 'package:twitter/features/auth/controller/auth_controller.dart';
+import 'package:twitter/features/tweet/widgets/tweet_card.dart';
+import 'package:twitter/features/user_profile/controller/user_profile_controller.dart';
 import 'package:twitter/features/user_profile/widgets/Follow_count.dart';
 import 'package:twitter/models/user_model.dart';
 import 'package:twitter/theme/theme.dart';
@@ -124,7 +126,23 @@ class UserProfile extends ConsumerWidget {
                 ),
               ];
             },
-            body: Container(),
+            body: ref.watch(getUserTweetsProvider(user.uid)).when(
+                  data: (tweets) {
+                    // can make it realtime by copying code
+                    // from twitter_reply_view
+                    return ListView.builder(
+                      itemCount: tweets.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final tweet = tweets[index];
+                        return TweetCard(tweet: tweet);
+                      },
+                    );
+                  },
+                  error: (error, st) => ErrorText(
+                    error: error.toString(),
+                  ),
+                  loading: () => const Loader(),
+                ),
           );
   }
 }
