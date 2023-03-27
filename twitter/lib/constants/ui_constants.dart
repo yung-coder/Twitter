@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:twitter/constants/constants.dart';
+import 'package:twitter/features/explore/view/explore_view_dart.dart';
 import 'package:twitter/features/tweet/widgets/tweet_list.dart';
 import 'package:twitter/theme/pallete.dart';
 
@@ -18,7 +19,7 @@ class UIConstants {
 
   static const List<Widget> bottomTabBarPages = [
     TweetList(),
-    Text('Search Screen'),
+    ExploreView(),
     Text('Noti')
   ];
 }
