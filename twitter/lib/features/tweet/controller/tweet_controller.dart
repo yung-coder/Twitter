@@ -84,10 +84,11 @@ class TweetController extends StateNotifier<bool> {
     final res = await _tweetAPI.likeTweet(tweet);
     return res.fold((l) => null, (r) {
       _notificationController.createNotification(
-          text: '${user.name} liked your tweet',
-          postId: tweet.id,
-          notificationType: NotificationType.like,
-          uid: tweet.uid);
+        text: '${user.name} liked your tweet',
+        postId: tweet.id,
+        notificationType: NotificationType.like,
+        uid: tweet.uid,
+      );
     });
   }
 
@@ -109,8 +110,18 @@ class TweetController extends StateNotifier<bool> {
           tweetedAt: DateTime.now(),
         );
         final res2 = await _tweetAPI.shareTweet(tweet);
-        res2.fold((l) => showSnackBar(context, l.message),
-            (r) => showSnackBar(context, 'retweeted'));
+        res2.fold(
+          (l) => showSnackBar(context, l.message),
+          (r) {
+            _notificationController.createNotification(
+              text: '${currentUser.name} reshared your tweet',
+              postId: tweet.id,
+              notificationType: NotificationType.like,
+              uid: tweet.uid,
+            );
+            showSnackBar(context, 'Retweeted!');
+          },
+        );
       },
     );
   }
@@ -120,6 +131,7 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    required String repliedToUserId,
   }) {
     if (text.isEmpty) {
       showSnackBar(context, 'Please enter text');
@@ -131,6 +143,7 @@ class TweetController extends StateNotifier<bool> {
         text: text,
         context: context,
         repliedTo: repliedTo,
+        repliedToUserId: repliedToUserId,
       );
     } else {
       _shareTextTweet(
@@ -138,6 +151,7 @@ class TweetController extends StateNotifier<bool> {
         text: text,
         context: context,
         repliedTo: repliedTo,
+        repliedToUserId: repliedToUserId,
       );
     }
   }
@@ -147,6 +161,7 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    required String repliedToUserId,
   }) async {
     state = true;
     final hashtags = _getHashtagsFromText(text);
@@ -172,8 +187,18 @@ class TweetController extends StateNotifier<bool> {
     state = false;
     res.fold(
       (l) => showSnackBar(context, l.message),
-      (r) => null,
+      (r) {
+        if (repliedToUserId.isNotEmpty) {
+          _notificationController.createNotification(
+            text: '${user.name} replied to  your tweet',
+            postId: r.$id,
+            notificationType: NotificationType.like,
+            uid: repliedToUserId,
+          );
+        }
+      },
     );
+    state = false;
   }
 
   void _shareTextTweet({
@@ -181,6 +206,7 @@ class TweetController extends StateNotifier<bool> {
     required String text,
     required BuildContext context,
     required String repliedTo,
+    required String repliedToUserId,
   }) async {
     state = true;
     final hashtags = _getHashtagsFromText(text);
@@ -205,8 +231,18 @@ class TweetController extends StateNotifier<bool> {
     state = false;
     res.fold(
       (l) => showSnackBar(context, l.message),
-      (r) => null,
+      (r) {
+        if (repliedToUserId.isNotEmpty) {
+          _notificationController.createNotification(
+            text: '${user.name} replied to  your tweet',
+            postId: r.$id,
+            notificationType: NotificationType.like,
+            uid: repliedToUserId,
+          );
+        }
+      },
     );
+    state = false;
   }
 
   String _getLinkFromText(String text) {
