@@ -1,3 +1,3 @@
 # Twitter 
 
-Appwrite +  Flutter Twitter clone.
+Appwrite +  Flutter Twitter.
