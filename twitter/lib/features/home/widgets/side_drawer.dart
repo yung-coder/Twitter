@@ -63,21 +63,21 @@ class SideDrawer extends ConsumerWidget {
                     );
               },
             ),
-            // ListTile(
-            //   leading: const Icon(
-            //     Icons.logout,
-            //     size: 30,
-            //   ),
-            //   title: const Text(
-            //     'Log Out',
-            //     style: TextStyle(
-            //       fontSize: 22,
-            //     ),
-            //   ),
-            //   onTap: () {
-            //     ref.read(authControllerProvider.notifier).logout(context);
-            //   },
-            // ),
+            ListTile(
+              leading: const Icon(
+                Icons.logout,
+                size: 30,
+              ),
+              title: const Text(
+                'Log Out',
+                style: TextStyle(
+                  fontSize: 22,
+                ),
+              ),
+              onTap: () {
+                ref.read(authControllerProvider.notifier).logout(context);
+              },
+            ),
           ],
         ),
       ),

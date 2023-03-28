@@ -6,6 +6,7 @@ import 'package:twitter/apis/auth_api.dart';
 import 'package:twitter/apis/user_api.dart';
 import 'package:twitter/core/utils.dart';
 import 'package:twitter/features/auth/view/login_view.dart';
+import 'package:twitter/features/auth/view/signup_view.dart';
 import 'package:twitter/features/home/view/home_view.dart';
 import 'package:appwrite/models.dart' as model;
 import 'package:twitter/models/user_model.dart';
@@ -104,5 +105,16 @@ class AuthController extends StateNotifier<bool> {
     final document = await _userAPI.getUserData(uid);
     final updatedUser = UserModel.fromMap(document.data);
     return updatedUser;
+  }
+
+  void logout(BuildContext context) async {
+    final res = await _authAPI.logout();
+    res.fold(
+      (l) => null,
+      (r) {
+        Navigator.pushAndRemoveUntil(
+            context, SignUpView.route(), (route) => false);
+      },
+    );
   }
 }
