@@ -12,6 +12,7 @@ import 'package:twitter/features/tweet/views/twitter_reply_screen.dart';
 import 'package:twitter/features/tweet/widgets/carousel_image.dart';
 import 'package:twitter/features/tweet/widgets/hashtags_text.dart';
 import 'package:twitter/features/tweet/widgets/tweet_icon_button.dart';
+import 'package:twitter/features/user_profile/view/user_profile.dart';
 import 'package:twitter/models/tweet_model.dart';
 import 'package:twitter/theme/theme.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -40,11 +41,19 @@ class TweetCard extends ConsumerWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(user.profilePic),
-                              radius: 35,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                UserProfileView.route(user),
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(10),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(user.profilePic),
+                                radius: 35,
+                              ),
                             ),
                           ),
                           Expanded(
